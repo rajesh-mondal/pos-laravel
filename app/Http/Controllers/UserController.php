@@ -29,7 +29,28 @@ class UserController extends Controller {
             return response()->json( ['status' => 'success', 'message' => 'User Registration Successfully'], 200 );
 
         } catch ( Exception $e ) {
-            return response()->json( ['status' => 'failed', 'message' => $e->getMessage()], 200 );
+            return response()->json( ['status' => 'failed', 'message' => $e->getMessage()] );
+        }
+    }
+
+    function UserLogin( Request $request ) {
+        try {
+            $request->validate( [
+                'email'    => 'required|string|email|max:50',
+                'password' => 'required|string|min:3',
+            ] );
+
+            $user = User::where( 'email', '=', $request->input( 'email' ) )->first();
+
+            if ( !$user || !Hash::check( $request->input( 'password' ), $user->password ) ) {
+                return response()->json( ['status' => 'failed', 'message' => 'Invalid User'] );
+            }
+
+            $token = $user->CreateToken( 'authToken' )->plainTextToken;
+            return response()->json( ['status' => 'failed', 'message' => 'Login Successful', 'token' => $token] );
+
+        } catch ( Exception $e ) {
+            return response()->json( ['status' => 'failed', 'message' => $e->getMessage()] );
         }
     }
 }
