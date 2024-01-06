@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Exception;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller {
@@ -47,10 +48,14 @@ class UserController extends Controller {
             }
 
             $token = $user->CreateToken( 'authToken' )->plainTextToken;
-            return response()->json( ['status' => 'failed', 'message' => 'Login Successful', 'token' => $token] );
+            return response()->json( ['status' => 'success', 'message' => 'Login Successful', 'token' => $token] );
 
         } catch ( Exception $e ) {
             return response()->json( ['status' => 'failed', 'message' => $e->getMessage()] );
         }
+    }
+
+    function UserProfile( Request $request ) {
+        return Auth::user();
     }
 }
