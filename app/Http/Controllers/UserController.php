@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -53,6 +53,11 @@ class UserController extends Controller {
         } catch ( Exception $e ) {
             return response()->json( ['status' => 'failed', 'message' => $e->getMessage()] );
         }
+    }
+
+    function UserLogout( Request $request ) {
+        $request->user()->tokens()->delete();
+        return redirect( '/userLogin' );
     }
 
     function UserProfile( Request $request ) {
