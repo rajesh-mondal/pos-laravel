@@ -63,4 +63,25 @@ class UserController extends Controller {
     function UserProfile( Request $request ) {
         return Auth::user();
     }
+
+    function UpdateProfile( Request $request ) {
+        try {
+            $request->validate( [
+                'firstName' => 'required|string|max:50',
+                'lastName'  => 'required|string|max:50',
+                'mobile'    => 'required|string|max:50',
+            ] );
+
+            User::where( 'id', '=', Auth::id() )->update( [
+                'firstName' => $request->input( 'firstName' ),
+                'lastName'  => $request->input( 'lastName' ),
+                'mobile'    => $request->input( 'mobile' ),
+            ] );
+
+            return response()->json( ['status' => 'success', 'message' => 'Request Successfull'] );
+
+        } catch ( Exception $e ) {
+            return response()->json( ['status' => 'failed', 'message' => $e->getMessage()] );
+        }
+    }
 }
